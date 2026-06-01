@@ -1,3 +1,4 @@
+using ERP.Infrastructure;
 using ERP.Infrastructure.Data;
 using ERP.Infrastructure.Seeds;
 using Microsoft.AspNetCore.Identity;
@@ -12,12 +13,7 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
 // ─── BASE DE DATOS ────────────────────────────────────────────────────────────
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(
-        builder.Configuration.GetConnectionString("DefaultConnection"),
-        sql => sql.MigrationsAssembly("ERP.Infrastructure")
-    )
-);
+builder.Services.AddInfrastructure(builder.Configuration);
 
 // ─── IDENTITY ────────────────────────────────────────────────────────────────
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
@@ -66,7 +62,6 @@ builder.Services.AddEndpointsApiExplorer();
 
 // ─── APPLICATION LAYER ────────────────────────────────────────────────────────
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(ERP.Application.Interfaces.IApplicationDbContext).Assembly));
-builder.Services.AddScoped<ERP.Application.Interfaces.IApplicationDbContext, ApplicationDbContext>();
 
 var app = builder.Build();
 
